@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>EPUB Reading-Level Analyzer — how hard is any book to read?</title>
+<meta name="description" content="Drop in any EPUB or text file and instantly see its reading grade level, vocabulary richness, and the handful of words that make up most of the book. Runs entirely in your browser — nothing is uploaded." />
+<style>
+  :root{--ink:#1a1a2e;--paper:#FBF8F1;--rule:#E5DCC7;--soft:#6B7280;--accent:#D4A537;--teal:#15868C;--plum:#5B4B8A}
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.7;font-size:18px}
+  .hero{width:100%;background:#14142b;overflow:hidden}
+  .hero svg{width:100%;height:230px;display:block}
+  .container{max-width:860px;margin:0 auto;padding:36px 24px 80px}
+  .kicker{text-transform:uppercase;letter-spacing:.16em;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--plum);font-weight:700;text-align:center;margin-bottom:12px}
+  h1{font-size:38px;line-height:1.18;text-align:center;margin:0 0 14px}
+  .lede{font-size:20px;color:#33334d;text-align:center;margin:0 auto 6px;max-width:680px}
+  .byline{color:var(--soft);font-style:italic;text-align:center;margin:18px 0 30px}
+  h2{font-size:26px;margin:48px 0 14px;border-bottom:1px solid var(--rule);padding-bottom:8px}
+  p{margin:0 0 16px} a{color:var(--teal)}
+  .drop{background:#fff;border:2px dashed #cbbf9f;border-radius:14px;padding:40px 24px;text-align:center;font-family:'Helvetica Neue',Arial,sans-serif;transition:.15s;cursor:pointer}
+  .drop.over{border-color:var(--teal);background:#f3faf8}
+  .drop h3{margin:0 0 8px;font-size:21px}
+  .drop p{color:var(--soft);font-size:15px;margin:0 0 16px}
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  button{font:inherit;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;border:none;border-radius:9px;padding:12px 20px;cursor:pointer}
+  .solid{background:var(--ink);color:#fff}.ghost{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+  #status{font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:var(--soft);text-align:center;margin:14px 0;min-height:20px}
+  .result{display:none;margin-top:26px}
+  .title{font-size:22px;font-weight:700;text-align:center;margin:6px 0 4px;font-family:'Helvetica Neue',Arial,sans-serif}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0;font-family:'Helvetica Neue',Arial,sans-serif}
+  .card{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:18px 12px;text-align:center}
+  .card .n{font-size:30px;font-weight:800;color:var(--plum);line-height:1}
+  .card .l{font-size:12.5px;color:var(--soft);margin-top:7px}
+  .grade{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:20px 24px;margin:16px 0;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center}
+  .grade .big{font-size:40px;font-weight:800;color:var(--teal)}
+  .grade .sub{color:#444;font-size:15px}
+  canvas{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius:10px;background:#fff;margin:14px 0}
+  .capt{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--soft);text-align:center;margin:-4px 0 26px}
+  .note{background:#fff;border:1px solid var(--rule);border-left:4px solid var(--teal);border-radius:8px;padding:14px 20px;font-size:14.5px;color:#444;font-family:'Helvetica Neue',Arial,sans-serif;margin:24px 0}
+  .footer{text-align:center;color:var(--soft);font-size:14px;margin-top:50px;font-family:'Helvetica Neue',Arial,sans-serif}
+  @media(max-width:620px){h1{font-size:29px}.cards{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <svg viewBox="0 0 860 230" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An open book with a magnifying glass over the words">
+    <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1c3d"/><stop offset="1" stop-color="#101025"/></linearGradient></defs>
+    <rect width="860" height="230" fill="url(#bg)"/>
+    <g transform="translate(300,120)">
+      <path d="M0 0 C-60 -22 -120 -18 -150 -6 L-150 70 C-120 58 -60 54 0 76 Z" fill="#f3ead6" opacity=".96"/>
+      <path d="M0 0 C60 -22 120 -18 150 -6 L150 70 C120 58 60 54 0 76 Z" fill="#e7dcc2" opacity=".96"/>
+      <g stroke="#b9ac8c" stroke-width="3" opacity=".8">
+        <line x1="-125" y1="4" x2="-25" y2="-6"/><line x1="-125" y1="22" x2="-25" y2="12"/><line x1="-125" y1="40" x2="-25" y2="30"/>
+        <line x1="25" y1="-6" x2="125" y2="4"/><line x1="25" y1="12" x2="125" y2="22"/><line x1="25" y1="30" x2="125" y2="40"/>
+      </g>
+    </g>
+    <g transform="translate(560,70)"><circle r="46" fill="none" stroke="#D4A537" stroke-width="9"/><line x1="33" y1="33" x2="78" y2="78" stroke="#D4A537" stroke-width="11" stroke-linecap="round"/>
+      <text x="0" y="10" text-anchor="middle" font-family="Helvetica" font-size="34" font-weight="800" fill="#15868C">Aa</text></g>
+  </svg>
+</div>
+<div class="container">
+  <p class="kicker">Interactive tool · 100% in your browser</p>
+  <h1>How hard is this book to read?</h1>
+  <p class="lede">Drop in any <strong>EPUB</strong> (or plain-text file) and instantly see its reading grade level, how rich its vocabulary is, and the small set of words that carry most of the book.</p>
+  <p class="byline">By Jeremy Lee</p>
+
+  <div class="drop" id="drop">
+    <h3>📖 Drop an EPUB or .txt here</h3>
+    <p>or choose a file — your book never leaves your device</p>
+    <div class="btns">
+      <button class="solid" id="pick">Choose a file</button>
+      <button class="ghost" id="sample">Try a sample (Alice in Wonderland)</button>
+    </div>
+    <input type="file" id="file" accept=".epub,.txt,application/epub+zip,text/plain" hidden>
+  </div>
+  <div id="status"></div>
+
+  <div class="result" id="result">
+    <div class="title" id="bookTitle"></div>
+    <div class="grade">
+      <div class="big" id="grade">—</div>
+      <div class="sub" id="gradeSub"></div>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="n" id="words">—</div><div class="l">total words</div></div>
+      <div class="card"><div class="n" id="unique">—</div><div class="l">unique words</div></div>
+      <div class="card"><div class="n" id="ttr">—</div><div class="l">vocabulary richness (TTR)</div></div>
+      <div class="card"><div class="n" id="ease">—</div><div class="l">reading ease (0–100)</div></div>
+    </div>
+    <canvas id="topchart" width="1600" height="700"></canvas>
+    <div class="capt">The 20 most frequent meaningful words (stopwords removed).</div>
+    <canvas id="covchart" width="1600" height="640"></canvas>
+    <div class="capt" id="covcap">How much of the whole book the most common words cover.</div>
+  </div>
+
+  <div class="note"><strong>Privacy:</strong> everything runs locally in your browser. The EPUB is unzipped on your device (using the browser's built-in decompression), analyzed, and never uploaded anywhere.</div>
+
+  <h2>What the numbers mean</h2>
+  <p><strong>Reading grade level</strong> (Flesch–Kincaid) estimates the U.S. school grade needed to read the text comfortably. <strong>Reading ease</strong> runs 0–100, higher = easier. <strong>Vocabulary richness (TTR)</strong> is the ratio of unique words to total words: lower means more repetition. The <strong>coverage curve</strong> shows how few distinct words you actually need to follow most of the book — the same lens I used to study the language of reality TV in my <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.</p>
+
+  <p class="footer">Vanilla JavaScript · dependency-free EPUB unzip via the native DecompressionStream API · © 2026 Jeremy Lee · MIT License · <a href="https://github.com/lyhjeremy/epub-reading-level-analyzer">source on GitHub</a></p>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const status=m=>{$('status').textContent=m;};
+  const STOP=new Set("the a an and or but if then so of to in on at by for with from as into onto is are was were be been being it its it's this that these those i you he she they we me him her them my your his their our us do does did not no nor too very can will just than s t re ve ll d m o".split(/\s+/));
+
+  // ---------- minimal ZIP reader (EPUB) using native DecompressionStream ----------
+  async function unzipHtml(buf){
+    const dv=new DataView(buf), u8=new Uint8Array(buf);
+    let eocd=-1;
+    for(let i=buf.byteLength-22;i>=0;i--){ if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;} }
+    if(eocd<0) throw new Error('not-zip');
+    const count=dv.getUint16(eocd+10,true); let p=dv.getUint32(eocd+16,true);
+    const out=[];
+    for(let n=0;n<count;n++){
+      if(dv.getUint32(p,true)!==0x02014b50) break;
+      const method=dv.getUint16(p+10,true), compSize=dv.getUint32(p+20,true);
+      const nameLen=dv.getUint16(p+28,true), extraLen=dv.getUint16(p+30,true), commentLen=dv.getUint16(p+32,true);
+      const localOff=dv.getUint32(p+42,true);
+      const name=new TextDecoder().decode(u8.subarray(p+46,p+46+nameLen));
+      p+=46+nameLen+extraLen+commentLen;
+      if(!/\.(x?html?|htm)$/i.test(name)) continue;
+      const lNameLen=dv.getUint16(localOff+26,true), lExtra=dv.getUint16(localOff+28,true);
+      const dataStart=localOff+30+lNameLen+lExtra;
+      const comp=u8.subarray(dataStart,dataStart+compSize);
+      let html;
+      if(method===0){ html=new TextDecoder('utf-8').decode(comp); }
+      else{
+        const ds=new DecompressionStream('deflate-raw');
+        const ab=await new Response(new Response(comp).body.pipeThrough(ds)).arrayBuffer();
+        html=new TextDecoder('utf-8').decode(new Uint8Array(ab));
+      }
+      out.push({name,html});
+    }
+    out.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+    return out;
+  }
+  function htmlToText(html){
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    doc.querySelectorAll('script,style').forEach(n=>n.remove());
+    return (doc.body?doc.body.textContent:doc.documentElement.textContent)||'';
+  }
+
+  // ---------- linguistics ----------
+  function syllables(w){
+    w=w.toLowerCase().replace(/[^a-z]/g,''); if(w.length<=3) return w.length?1:0;
+    w=w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/,'').replace(/^y/,'');
+    const m=w.match(/[aeiouy]{1,2}/g); return m?m.length:1;
+  }
+  function analyze(text){
+    text=text.replace(/\s+/g,' ').trim();
+    const sentences=Math.max(1,(text.match(/[.!?]+["'”’)\]]*(?:\s|$)/g)||[]).length);
+    const tokens=(text.toLowerCase().match(/[a-z][a-z']*[a-z]|[a-z]/g))||[];
+    const W=tokens.length||1;
+    let syl=0; for(const t of tokens) syl+=syllables(t);
+    const fkGrade=0.39*(W/sentences)+11.8*(syl/W)-15.59;
+    const ease=206.835-1.015*(W/sentences)-84.6*(syl/W);
+    const freq=new Map(); for(const t of tokens) freq.set(t,(freq.get(t)||0)+1);
+    const types=freq.size;
+    // sorted desc for coverage (all words)
+    const sorted=[...freq.entries()].sort((a,b)=>b[1]-a[1]);
+    // coverage: how many top words to reach 50/80/95% of all tokens
+    let cum=0; const cov=[]; const marks={};
+    for(let i=0;i<sorted.length;i++){ cum+=sorted[i][1]; const frac=cum/W;
+      if(i<400||i%5===0) cov.push([i+1,frac]);
+      for(const m of [0.5,0.8,0.95,0.98]) if(marks[m]===undefined && frac>=m) marks[m]=i+1;
+    }
+    const topMeaningful=sorted.filter(([w])=>!STOP.has(w)).slice(0,20);
+    return {W,sentences,types,ttr:types/W,fkGrade,ease,topMeaningful,cov,marks,top100:sorted.slice(0,100).reduce((a,[,c])=>a+c,0)/W};
+  }
+
+  // ---------- charts ----------
+  function barChart(cv,data){
+    const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,padL=260,padR=60,padT=20,padB=20;
+    ctx.clearRect(0,0,W,H); if(!data.length)return;
+    const max=data[0][1], bh=(H-padT-padB)/data.length;
+    ctx.font='26px Helvetica,Arial';
+    data.forEach(([w,c],i)=>{
+      const y=padT+i*bh, len=(W-padL-padR)*(c/max);
+      ctx.fillStyle='#5B4B8A'; ctx.fillRect(padL,y+bh*0.15,len,bh*0.7);
+      ctx.fillStyle='#333'; ctx.textAlign='right'; ctx.fillText(w,padL-16,y+bh*0.66);
+      ctx.fillStyle='#777'; ctx.textAlign='left'; ctx.fillText(c.toLocaleString(),padL+len+10,y+bh*0.66);
+    });
+  }
+  function covChart(cv,cov,marks,types){
+    const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,padL=110,padR=40,padT=30,padB=70;
+    ctx.clearRect(0,0,W,H);
+    const maxX=Math.max(types,1);
+    const X=v=>padL+(W-padL-padR)*Math.min(1,Math.log10(v+1)/Math.log10(maxX+1));
+    const Y=f=>H-padB-(H-padT-padB)*f;
+    ctx.strokeStyle='#eee5d2';ctx.fillStyle='#888';ctx.font='24px Helvetica,Arial';ctx.lineWidth=2;
+    for(let g=0;g<=5;g++){const f=g/5,py=Y(f);ctx.beginPath();ctx.moveTo(padL,py);ctx.lineTo(W-padR,py);ctx.stroke();ctx.textAlign='right';ctx.fillText(Math.round(f*100)+'%',padL-10,py+8);}
+    ctx.beginPath();ctx.strokeStyle='#15868C';ctx.lineWidth=4;
+    cov.forEach(([n,f],i)=>{const px=X(n),py=Y(f);i?ctx.lineTo(px,py):ctx.moveTo(px,py);});ctx.stroke();
+    // 95% marker
+    if(marks[0.95]){const px=X(marks[0.95]),py=Y(0.95);ctx.strokeStyle='#D4A537';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(px,padT);ctx.lineTo(px,H-padB);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#a9831f';ctx.textAlign='center';ctx.fillText(marks[0.95].toLocaleString()+' words = 95%',px,padT+20);}
+    ctx.fillStyle='#555';ctx.textAlign='center';ctx.fillText('Number of most-common words (log scale)',(padL+W-padR)/2,H-16);
+  }
+
+  function render(title,a){
+    $('bookTitle').textContent=title;
+    const g=Math.max(1,Math.round(a.fkGrade));
+    $('grade').textContent='Grade '+g;
+    const band=a.fkGrade<6?'easy — upper-elementary level':a.fkGrade<9?'middle-school level':a.fkGrade<13?'high-school level':'college level';
+    $('gradeSub').textContent='Flesch–Kincaid · '+band;
+    $('words').textContent=a.W.toLocaleString();
+    $('unique').textContent=a.types.toLocaleString();
+    $('ttr').textContent=(a.ttr*100).toFixed(1)+'%';
+    $('ease').textContent=Math.max(0,Math.min(100,Math.round(a.ease)));
+    barChart($('topchart'),a.topMeaningful);
+    covChart($('covchart'),a.cov,a.marks,a.types);
+    $('covcap').textContent=`The 100 most common words make up ${(a.top100*100).toFixed(0)}% of the book`+(a.marks[0.95]?`; about ${a.marks[0.95].toLocaleString()} distinct words cover 95%.`:'.');
+    $('result').style.display='block';
+    $('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  async function handle(file){
+    try{
+      status('Reading "'+file.name+'" …');
+      let text, title=file.name.replace(/\.(epub|txt)$/i,'');
+      if(/\.epub$/i.test(file.name)){
+        const parts=await unzipHtml(await file.arrayBuffer());
+        if(!parts.length) throw new Error('No readable chapters found in this EPUB.');
+        text=parts.map(p=>htmlToText(p.html)).join('\n');
+      } else {
+        text=await file.text();
+      }
+      if(text.trim().length<200) throw new Error('Not enough text to analyze.');
+      status('Analyzing '+text.length.toLocaleString()+' characters …');
+      await new Promise(r=>setTimeout(r,10));
+      render(title,analyze(text));
+      status('Done — analyzed "'+title+'" entirely on your device.');
+    }catch(e){ status('⚠ '+e.message); }
+  }
+
+  $('pick').onclick=e=>{e.stopPropagation();$('file').click();};
+  $('drop').onclick=()=>$('file').click();
+  $('file').onchange=e=>{ if(e.target.files[0]) handle(e.target.files[0]); };
+  $('sample').onclick=async e=>{
+    e.stopPropagation(); status('Loading sample …');
+    try{ const r=await fetch('sample-alice-in-wonderland.txt'); const t=await r.text();
+      render('Alice’s Adventures in Wonderland (sample)',analyze(t)); status('Sample analyzed.');
+    }catch(err){ status('⚠ Could not load sample.'); }
+  };
+  const d=$('drop');
+  ['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('over');}));
+  ['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('over');}));
+  d.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) handle(f); });
+})();
+</script>
+</body>
+</html>
