@@ -5,6 +5,7 @@ its reading grade level, vocabulary richness, and the small set of words that ca
 most of the book. Everything runs in your browser — **nothing is uploaded**.
 
 > 🌐 **Try it:** https://lyhjeremy.github.io/epub-reading-level-analyzer/
+> 📖 **Product overview:** https://lyhjeremy.github.io/epub-reading-level-analyzer/overview/
 
 ## What you get
 - **Reading grade level** (Flesch–Kincaid) and **reading ease** (0–100).
