@@ -3,47 +3,53 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>EPUB Reading-Level Analyzer — how hard is any book to read?</title>
-<meta name="description" content="Drop in any EPUB or text file and instantly see its reading grade level, vocabulary richness, and the handful of words that make up most of the book. Runs entirely in your browser — nothing is uploaded." />
+<title>EPUB Reading-Level Analyzer: how hard is any book to read?</title>
+<meta name="description" content="Drop in any EPUB or text file and instantly see its reading grade level, vocabulary richness, and the handful of words that make up most of the book. Runs entirely in your browser, nothing is uploaded." />
 <style>
-  :root{--ink:#1a1a2e;--paper:#FBF8F1;--rule:#E5DCC7;--soft:#6B7280;--accent:#D4A537;--teal:#15868C;--plum:#5B4B8A}
+@font-face{font-family:"Source Serif 4";src:url("fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url("fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url("fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url("fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"IBM Plex Mono";src:url("fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
+
+  :root{--ink:#1C1E1B;--paper:#EDEDE7;--rule:#C6C7BF;--soft:#52564E;--accent:#8C3A1E;--teal:#2C5852;--plum:#5B4B8A}
   *{box-sizing:border-box} html,body{margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.7;font-size:18px}
+  body{background:var(--paper);color:var(--ink);font-family:"Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, serif;line-height:1.7;font-size:18px}
   .hero{width:100%;background:#14142b;overflow:hidden}
   .hero svg{width:100%;height:230px;display:block}
   .container{max-width:860px;margin:0 auto;padding:36px 24px 80px}
-  .kicker{text-transform:uppercase;letter-spacing:.16em;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--plum);font-weight:700;text-align:center;margin-bottom:12px}
+  .kicker{text-transform:uppercase;letter-spacing:.16em;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:13px;color:var(--plum);font-weight:700;text-align:center;margin-bottom:12px}
   h1{font-size:38px;line-height:1.18;text-align:center;margin:0 0 14px}
   .lede{font-size:20px;color:#33334d;text-align:center;margin:0 auto 6px;max-width:680px}
   .byline{color:var(--soft);font-style:italic;text-align:center;margin:18px 0 30px}
   h2{font-size:26px;margin:48px 0 14px;border-bottom:1px solid var(--rule);padding-bottom:8px}
   p{margin:0 0 16px} a{color:var(--teal)}
-  .drop{background:#fff;border:2px dashed #cbbf9f;border-radius:14px;padding:40px 24px;text-align:center;font-family:'Helvetica Neue',Arial,sans-serif;transition:.15s;cursor:pointer}
+  .drop{background:#F5F5F0;border:2px dashed #cbbf9f;border-radius: 0;padding:40px 24px;text-align:center;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;cursor:pointer}
   .drop.over{border-color:var(--teal);background:#f3faf8}
   .drop h3{margin:0 0 8px;font-size:21px}
   .drop p{color:var(--soft);font-size:15px;margin:0 0 16px}
   .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  button{font:inherit;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;border:none;border-radius:9px;padding:12px 20px;cursor:pointer}
-  .solid{background:var(--ink);color:#fff}.ghost{background:#fff;color:var(--ink);border:1px solid var(--ink)}
-  #status{font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:var(--soft);text-align:center;margin:14px 0;min-height:20px}
+  button{font:inherit;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-weight:700;font-size:15px;border:none;border-radius: 0;padding:12px 20px;cursor:pointer}
+  .solid{background:var(--ink);color:#F5F5F0}.ghost{background:#F5F5F0;color:var(--ink);border:1px solid var(--ink)}
+  #status{font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:14px;color:var(--soft);text-align:center;margin:14px 0;min-height:20px}
   .result{display:none;margin-top:26px}
-  .title{font-size:22px;font-weight:700;text-align:center;margin:6px 0 4px;font-family:'Helvetica Neue',Arial,sans-serif}
-  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0;font-family:'Helvetica Neue',Arial,sans-serif}
-  .card{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:18px 12px;text-align:center}
+  .title{font-size:22px;font-weight:700;text-align:center;margin:6px 0 4px;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
+  .card{background:#F5F5F0;border:1px solid var(--rule);border-radius: 0;padding:18px 12px;text-align:center}
   .card .n{font-size:30px;font-weight:800;color:var(--plum);line-height:1}
   .card .l{font-size:12.5px;color:var(--soft);margin-top:7px}
-  .grade{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:20px 24px;margin:16px 0;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center}
+  .grade{background:#F5F5F0;border:1px solid var(--rule);border-radius: 0;padding:20px 24px;margin:16px 0;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;text-align:center}
   .grade .big{font-size:40px;font-weight:800;color:var(--teal)}
   .grade .sub{color:#444;font-size:15px}
-  canvas{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius:10px;background:#fff;margin:14px 0}
-  .capt{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--soft);text-align:center;margin:-4px 0 26px}
-  .note{background:#fff;border:1px solid var(--rule);border-left:4px solid var(--teal);border-radius:8px;padding:14px 20px;font-size:14.5px;color:#444;font-family:'Helvetica Neue',Arial,sans-serif;margin:24px 0}
-  .footer{text-align:center;color:var(--soft);font-size:14px;margin-top:50px;font-family:'Helvetica Neue',Arial,sans-serif}
+  canvas{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius: 0;background:#F5F5F0;margin:14px 0}
+  .capt{font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:13px;color:var(--soft);text-align:center;margin:-4px 0 26px}
+  .note{background:#F5F5F0;border:1px solid var(--rule);border-left:4px solid var(--teal);border-radius: 0;padding:14px 20px;font-size:14.5px;color:#444;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;margin:24px 0}
+  .footer{text-align:center;color:var(--soft);font-size:14px;margin-top:50px;font-family:"IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif}
   @media(max-width:620px){h1{font-size:29px}.cards{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<a href="overview/" data-overview-link style="display:block;background:#1a1a2e;color:#FBF8F1;text-align:center;padding:11px 18px;font:600 14.5px/1.45 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none">Read the full writeup&nbsp;&rarr;</a>
+<a href="overview/" data-overview-link style="display:block;background:#1C1E1B;color:#EDEDE7;text-align:center;padding:11px 18px;font:600 14.5px/1.45 -apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none">Read the full writeup&nbsp;&rarr;</a>
 
 <div class="hero">
   <svg viewBox="0 0 860 230" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An open book with a magnifying glass over the words">
@@ -57,8 +63,8 @@
         <line x1="25" y1="-6" x2="125" y2="4"/><line x1="25" y1="12" x2="125" y2="22"/><line x1="25" y1="30" x2="125" y2="40"/>
       </g>
     </g>
-    <g transform="translate(560,70)"><circle r="46" fill="none" stroke="#D4A537" stroke-width="9"/><line x1="33" y1="33" x2="78" y2="78" stroke="#D4A537" stroke-width="11" stroke-linecap="round"/>
-      <text x="0" y="10" text-anchor="middle" font-family="Helvetica" font-size="34" font-weight="800" fill="#15868C">Aa</text></g>
+    <g transform="translate(560,70)"><circle r="46" fill="none" stroke="#8C3A1E" stroke-width="9"/><line x1="33" y1="33" x2="78" y2="78" stroke="#8C3A1E" stroke-width="11" stroke-linecap="round"/>
+      <text x="0" y="10" text-anchor="middle" font-family="Helvetica" font-size="34" font-weight="800" fill="#2C5852">Aa</text></g>
   </svg>
 </div>
 <div class="container">
@@ -68,8 +74,8 @@
   <p class="byline">By Jeremy Lee</p>
 
   <div class="drop" id="drop">
-    <h3>📖 Drop an EPUB or .txt here</h3>
-    <p>or choose a file — your book never leaves your device</p>
+    <h3>Drop an EPUB or .txt here</h3>
+    <p>or choose a file. Your book never leaves your device</p>
     <div class="btns">
       <button class="solid" id="pick">Choose a file</button>
       <button class="ghost" id="sample">Try a sample (Alice in Wonderland)</button>
@@ -81,14 +87,14 @@
   <div class="result" id="result">
     <div class="title" id="bookTitle"></div>
     <div class="grade">
-      <div class="big" id="grade">—</div>
+      <div class="big" id="grade">n/a</div>
       <div class="sub" id="gradeSub"></div>
     </div>
     <div class="cards">
-      <div class="card"><div class="n" id="words">—</div><div class="l">total words</div></div>
-      <div class="card"><div class="n" id="unique">—</div><div class="l">unique words</div></div>
-      <div class="card"><div class="n" id="ttr">—</div><div class="l">vocabulary richness (TTR)</div></div>
-      <div class="card"><div class="n" id="ease">—</div><div class="l">reading ease (0–100)</div></div>
+      <div class="card"><div class="n" id="words">n/a</div><div class="l">total words</div></div>
+      <div class="card"><div class="n" id="unique">n/a</div><div class="l">unique words</div></div>
+      <div class="card"><div class="n" id="ttr">n/a</div><div class="l">vocabulary richness (TTR)</div></div>
+      <div class="card"><div class="n" id="ease">n/a</div><div class="l">reading ease (0–100)</div></div>
     </div>
     <canvas id="topchart" width="1600" height="700"></canvas>
     <div class="capt">The 20 most frequent meaningful words (stopwords removed).</div>
@@ -99,7 +105,7 @@
   <div class="note"><strong>Privacy:</strong> everything runs locally in your browser. The EPUB is unzipped on your device (using the browser's built-in decompression), analyzed, and never uploaded anywhere.</div>
 
   <h2>What the numbers mean</h2>
-  <p><strong>Reading grade level</strong> (Flesch–Kincaid) estimates the U.S. school grade needed to read the text comfortably. <strong>Reading ease</strong> runs 0–100, higher = easier. <strong>Vocabulary richness (TTR)</strong> is the ratio of unique words to total words: lower means more repetition. The <strong>coverage curve</strong> shows how few distinct words you actually need to follow most of the book — the same lens I used to study the language of reality TV in my <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.</p>
+  <p><strong>Reading grade level</strong> (Flesch–Kincaid) estimates the U.S. school grade needed to read the text comfortably. <strong>Reading ease</strong> runs 0–100, higher = easier. <strong>Vocabulary richness (TTR)</strong> is the ratio of unique words to total words: lower means more repetition. The <strong>coverage curve</strong> shows how few distinct words you actually need to follow most of the book. The same lens I used to study the language of reality TV in my <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.</p>
 
   <p class="footer">Vanilla JavaScript · dependency-free EPUB unzip via the native DecompressionStream API · © 2026 Jeremy Lee · MIT License · <a href="https://github.com/lyhjeremy/epub-reading-level-analyzer">source on GitHub</a></p>
 </div>
@@ -196,10 +202,10 @@
     const Y=f=>H-padB-(H-padT-padB)*f;
     ctx.strokeStyle='#eee5d2';ctx.fillStyle='#888';ctx.font='24px Helvetica,Arial';ctx.lineWidth=2;
     for(let g=0;g<=5;g++){const f=g/5,py=Y(f);ctx.beginPath();ctx.moveTo(padL,py);ctx.lineTo(W-padR,py);ctx.stroke();ctx.textAlign='right';ctx.fillText(Math.round(f*100)+'%',padL-10,py+8);}
-    ctx.beginPath();ctx.strokeStyle='#15868C';ctx.lineWidth=4;
+    ctx.beginPath();ctx.strokeStyle='#2C5852';ctx.lineWidth=4;
     cov.forEach(([n,f],i)=>{const px=X(n),py=Y(f);i?ctx.lineTo(px,py):ctx.moveTo(px,py);});ctx.stroke();
     // 95% marker
-    if(marks[0.95]){const px=X(marks[0.95]),py=Y(0.95);ctx.strokeStyle='#D4A537';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(px,padT);ctx.lineTo(px,H-padB);ctx.stroke();ctx.setLineDash([]);
+    if(marks[0.95]){const px=X(marks[0.95]),py=Y(0.95);ctx.strokeStyle='#8C3A1E';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(px,padT);ctx.lineTo(px,H-padB);ctx.stroke();ctx.setLineDash([]);
       ctx.fillStyle='#a9831f';ctx.textAlign='center';ctx.fillText(marks[0.95].toLocaleString()+' words = 95%',px,padT+20);}
     ctx.fillStyle='#555';ctx.textAlign='center';ctx.fillText('Number of most-common words (log scale)',(padL+W-padR)/2,H-16);
   }
@@ -208,7 +214,7 @@
     $('bookTitle').textContent=title;
     const g=Math.max(1,Math.round(a.fkGrade));
     $('grade').textContent='Grade '+g;
-    const band=a.fkGrade<6?'easy — upper-elementary level':a.fkGrade<9?'middle-school level':a.fkGrade<13?'high-school level':'college level';
+    const band=a.fkGrade<6?'easy, upper-elementary level':a.fkGrade<9?'middle-school level':a.fkGrade<13?'high-school level':'college level';
     $('gradeSub').textContent='Flesch–Kincaid · '+band;
     $('words').textContent=a.W.toLocaleString();
     $('unique').textContent=a.types.toLocaleString();
@@ -236,8 +242,8 @@
       status('Analyzing '+text.length.toLocaleString()+' characters …');
       await new Promise(r=>setTimeout(r,10));
       render(title,analyze(text));
-      status('Done — analyzed "'+title+'" entirely on your device.');
-    }catch(e){ status('⚠ '+e.message); }
+      status('Done, analyzed "'+title+'" entirely on your device.');
+    }catch(e){ status('Error: '+e.message); }
   }
 
   $('pick').onclick=e=>{e.stopPropagation();$('file').click();};
@@ -247,7 +253,7 @@
     e.stopPropagation(); status('Loading sample …');
     try{ const r=await fetch('sample-alice-in-wonderland.txt'); const t=await r.text();
       render('Alice’s Adventures in Wonderland (sample)',analyze(t)); status('Sample analyzed.');
-    }catch(err){ status('⚠ Could not load sample.'); }
+    }catch(err){ status('Error: Could not load sample.'); }
   };
   const d=$('drop');
   ['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('over');}));

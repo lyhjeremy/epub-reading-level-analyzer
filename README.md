@@ -1,11 +1,13 @@
 # EPUB Reading-Level Analyzer
 
+Design and copy follow [these standards](https://github.com/lyhjeremy/lyhjeremy/blob/main/DESIGN_STANDARDS.md).
+
 Drop in any **EPUB** (or plain-text file) and instantly see how hard it is to read:
 its reading grade level, vocabulary richness, and the small set of words that carry
-most of the book. Everything runs in your browser — **nothing is uploaded**.
+most of the book. Everything runs in your browser. **Nothing is uploaded**.
 
-> 🌐 **Try it:** https://lyhjeremy.github.io/epub-reading-level-analyzer/
-> 📖 **Product overview:** https://lyhjeremy.github.io/epub-reading-level-analyzer/overview/
+> **Try it:** https://lyhjeremy.github.io/epub-reading-level-analyzer/
+> **Product overview:** https://lyhjeremy.github.io/epub-reading-level-analyzer/overview/
 
 ## What you get
 - **Reading grade level** (Flesch–Kincaid) and **reading ease** (0–100).
@@ -19,7 +21,7 @@ turned into a reusable tool you can point at any book.
 ## How it works (and why it's private)
 EPUB files are just ZIP archives of HTML. The app unzips the file **in your browser**
 using the native [`DecompressionStream`](https://developer.mozilla.org/docs/Web/API/DecompressionStream)
-API — no third-party libraries and no server. The text is extracted with the
+API, no third-party libraries and no server. The text is extracted with the
 browser's HTML parser, then tokenized and scored. Your book never leaves your device.
 
 A public-domain sample (*Alice's Adventures in Wonderland*, Project Gutenberg) is
