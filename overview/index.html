@@ -3,55 +3,57 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>EPUB Reading-Level Analyzer: unzips your book in the browser, uploads nothing</title>
-<meta name="description" content="Drop in an EPUB and see its reading grade, vocabulary richness, and the small set of words carrying most of the book. It unzips the file with a native browser API, no server, no libraries." />
-<meta name="theme-color" content="#EDEDE7" />
+<title>EPUB reading-level analyzer: reading grade and vocabulary coverage for any book, in the browser</title>
+<meta name="description" content="Drop in an EPUB and get its Flesch-Kincaid grade, vocabulary richness and a coverage curve. The file is unzipped with the browser's native DecompressionStream; nothing is uploaded." />
+<meta name="theme-color" content="#EEEDE6" />
 <meta property="og:title" content="How hard is this book to read?" />
-<meta property="og:description" content="Reading level, vocabulary richness and a coverage curve for any EPUB, computed entirely in your browser." />
+<meta property="og:description" content="Reading grade, vocabulary richness and a coverage curve for any EPUB, computed in your browser with no upload." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://lyhjeremy.github.io/epub-reading-level-analyzer/overview/" />
+<link href="" rel="stylesheet" />
 <style>
-@font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:"IBM Plex Mono";src:url("../fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
-
   :root {
-    --paper: #EDEDE7;
-    --card: #F5F5F0;
-    --plate: #F5F5F0;
-    --ink: #1C1E1B;
-    --ink2: #3d3d55;
-    --muted: #52564E;
-    --rule: #C6C7BF;
-    --accent: #2C5852;
-    --accent2: #8C3A1E;
-    --link: #8C3A1E;
-    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-    --sans: 'Source Sans 3', -apple-system, system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
-    --shadow: 0 1px 2px rgba(26,26,46,.05), 0 10px 34px rgba(26,26,46,.07);
+    --paper: #EEEDE6;
+    --card: #F6F5EF;
+    --plate: #F6F5EF;
+    --ink: #1B1E24;
+    --ink2: #4F5560;
+    --muted: #4F5560;
+    --rule: #C8C9C2;
+    --accent: #9E3A2C;
+    --accent2: #284B73;
+    --link: #9E3A2C;
+    --serif: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --edge: #757A80;
     --spine:  92px;
     --col:    min(100% - 2.6rem, 62rem);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --paper: #14141f;
-      --card: #1c1c2a;
-      --plate: #f7f4ec;
-      --ink: #F2EFE6;
-      --ink2: #C9C4B6;
-      --muted: #918B7D;
-      --rule: #33313f;
-      --accent: #A78BFA;
-      --accent2: #22D3EE;
-      --link: #22D3EE;
-      --shadow: 0 1px 2px rgba(0,0,0,.32), 0 10px 34px rgba(0,0,0,.4);
+      --paper: #181A1F;
+      --card: #21242A;
+      --plate: #21242A;
+      --ink: #E5E6E2;
+      --ink2: #A5AAB3;
+      --muted: #A5AAB3;
+      --rule: #3A3E45;
+      --accent: #D88E80;
+      --accent2: #86A9D6;
+      --link: #D88E80;
+      --edge: #6B7079;
     }
   }
 
-  * { box-sizing: border-box; }
+  @font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-400.woff2")format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Source Serif 4";src:url("../fonts/SourceSerif4-600.woff2")format("woff2");font-weight:600;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-400.woff2")format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans";src:url("../fonts/IBMPlexSans-600.woff2")format("woff2");font-weight:600;font-display:swap}
+  @font-face{font-family:"IBM Plex Mono";src:url("../fonts/IBMPlexMono-400.woff2")format("woff2");font-weight:400;font-display:swap}
+
+  * { box-sizing: border-box; border-radius: 0; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--paper); color: var(--ink);
@@ -210,64 +212,88 @@
     html { scroll-behavior: auto; }
     .btn { }
   }
+  @font-face{font-family:"Newsreader";src:url("../fonts/Newsreader-600.woff2")format("woff2");font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:"Newsreader";src:url("../fonts/Newsreader-400i.woff2")format("woff2");font-weight:400;font-style:italic;font-display:swap}
 
+  .btn:hover { transform: none; background: var(--accent); border-color: var(--accent); color: var(--paper); }
+  .pull { border: 1px solid var(--edge); border-left: 1px solid var(--edge); background: transparent; }
+  .term { background: var(--card); color: var(--ink); border: 1px solid var(--rule); }
+  .term .c { color: var(--muted); } .term .g { color: var(--accent2); } .term .y { color: var(--accent); }
+  .logo, .hero h1, h2, .claim .n, .bignum { font-family: var(--display); }
+
+  /* Language: a well-set book. Newsreader display, italic glosses, notes in the margin. */
+  .logo { font-weight: 600; font-size: 23px; letter-spacing: 0; }
+  .hero h1 { font-weight: 600; font-size: clamp(42px, 6.6vw, 80px); letter-spacing: -.015em; line-height: 1.02; max-width: 16ch; }
+  .kicker { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(20px, 2.3vw, 25px); color: var(--accent2); }
+  h2 { font-weight: 600; letter-spacing: -.01em; font-size: clamp(29px, 3.9vw, 40px); }
+  .claim, .claim:first-child, .claim:nth-child(2) { border-top: 1px solid var(--rule); }
+  .claim .n { font-weight: 600; font-size: 44px; letter-spacing: -.01em; color: var(--accent2); }
+  .bignum { font-weight: 600; color: var(--accent2); }
+  .eyebrow { font-family: var(--display); font-style: italic; text-transform: none; letter-spacing: 0;
+             font-size: 18px; font-weight: 400; color: var(--accent); }
+  :root { --spine: 0px; }
+  .route::before, .stop::before { display: none; }
+  .stop { padding-left: 0; }
+  @media (min-width: 980px) {
+    .stop { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: 40px; }
+    .stop > * { grid-column: 2; }
+    .stop > .eyebrow { grid-column: 1; grid-row: 1 / span 2; text-align: right; padding-top: 14px;
+                       border-top: 1px solid var(--rule); }
+  }
+
+
+  /* Signature: the sample's top words set as a back-of-book index. */
+  .index { margin: 34px 0 0; border-top: 2px solid var(--ink); padding-top: 16px; }
+  .index h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 20px; color: var(--accent); margin: 0 0 10px; }
+  .index p { margin: 0; max-width: none; font-family: var(--display); font-size: 21px; line-height: 1.7; color: var(--ink); }
+  .index .c { font-family: var(--mono); font-size: 14px; color: var(--ink2); margin: 0 12px 0 5px; }
+  .index .cap { font-family: var(--sans); font-size: 14px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+  .marks { display: flex; flex-wrap: wrap; gap: 0; margin: 26px 0 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .mark { flex: 1 1 8rem; padding: 12px 16px 12px 0; }
+  .mark + .mark { border-left: 1px solid var(--rule); padding-left: 16px; }
+  .mark b { display: block; font-family: var(--display); font-weight: 600; font-size: 30px; color: var(--accent2); line-height: 1.1; }
+  .mark span { font-family: var(--sans); font-size: 14px; color: var(--muted); }
+  @media (max-width: 520px) { .mark { flex-basis: 45%; } .mark + .mark { border-left: 0; padding-left: 0; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="masthead">
-    <div class="logo"><span class="dot" aria-hidden="true"></span>EPUB Reading-Level Analyzer</div>
-    <div class="tagline">drop a book in, nothing goes out</div>
+    <div class="logo">EPUB reading-level analyzer</div>
+    <div class="tagline">runs in the browser, uploads nothing</div>
   </header>
 
   <section class="hero">
-    <p class="kicker">"Is this book too hard for me?" is a measurable question.</p>
-    <h1>Drop the file in. It never leaves your laptop.</h1>
+    <p class="kicker">A browser tool for readers and language learners</p>
+    <h1>Drop in a book and see how hard it is to read.</h1>
 
     <p class="hero-sub">
-      Give it any EPUB and you get a reading grade level, a reading-ease score,
-      vocabulary richness, and the chart that actually matters to a learner: the
-      <strong>coverage curve</strong> showing how few distinct words you need to
-      follow most of the book. The EPUB is unzipped
-      <strong>in the browser</strong> with a native API, no server, no upload, and
-      no third-party libraries.
+      Give it an EPUB or a text file and it reports a Flesch-Kincaid grade, a
+      reading-ease score, vocabulary richness, the most frequent words, and a
+      coverage curve: how many distinct words you need to know to follow most of
+      the book. The EPUB is unzipped by the browser's own
+      <code>DecompressionStream</code>, so the file never leaves your device.
     </p>
 
     <div class="cta-row">
       <a class="btn btn-primary" href="../">Analyze a book</a>
-      <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">or read the code</a>
+      <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Code on GitHub</a>
     </div>
 
     <figure style="margin-top:38px">
       <img width="1624" height="2204" class="shot" src="result-card.png" fetchpriority="high"
         alt="Analysis results for Alice's Adventures in Wonderland: Grade 6, 26,715 total words, 2,637 unique words, 9.9% vocabulary richness, reading ease 82, a bar chart of the twenty most frequent words led by said and alice, and a coverage curve crossing 95% at 1,397 words." />
       <figcaption>
-        A real run on the bundled public-domain sample.
-        <em>Alice's Adventures in Wonderland</em>: <strong>Grade 6</strong>,
-        26,715 words, and <strong>1,397 distinct words cover 95%</strong> of it.
+        The result for the bundled public-domain sample, <em>Alice's Adventures in
+        Wonderland</em>: grade 6 (5.9 unrounded), 26,715 words, 2,637 distinct words.
       </figcaption>
     </figure>
 
-    <div class="claims">
-      <div class="claim">
-        <div class="n">0 bytes</div>
-        <p>uploaded. The ZIP is decompressed by the browser itself, so the book
-           never touches a network.</p>
-      </div>
-      <div class="claim">
-        <div class="n">0 deps</div>
-        <p>No unzip library, no charting library, no framework. One HTML file.</p>
-      </div>
-      <div class="claim">
-        <div class="n">1,397</div>
-        <p>distinct words for 95% coverage of <em>Alice</em>. The top 100 alone
-           carry <strong>59%</strong> of the book.</p>
-      </div>
-      <div class="claim">
-        <div class="n">1 click</div>
-        <p>to try it. A public-domain sample is bundled so you don't need a file
-           to hand.</p>
-      </div>
+    <div class="marks" aria-label="Distinct words needed to cover each share of Alice's Adventures in Wonderland">
+      <div class="mark"><b>58</b><span>words cover 50%</span></div>
+      <div class="mark"><b>385</b><span>cover 80%</span></div>
+      <div class="mark"><b>1,397</b><span>cover 95%</span></div>
+      <div class="mark"><b>2,103</b><span>cover 98%</span></div>
     </div>
   </section>
 </div>
@@ -276,122 +302,109 @@
 <div class="route">
 
   <section class="stop stop--key">
-    <p class="eyebrow">↓ the trick</p>
-    <h2>An EPUB is a ZIP, and browsers can now unzip</h2>
+    <p class="eyebrow">How it works</p>
+    <h2>An EPUB is a ZIP, and browsers can unzip</h2>
     <p>
-      Every EPUB is a ZIP archive of HTML files. The usual way to read one in a web
-      page is to pull in a JavaScript unzip library, and the usual way to analyse a
-      book is to send it to a server. Both are avoidable.
+      Every EPUB is a ZIP archive of XHTML files. Reading one in a web page usually
+      means bundling a JavaScript unzip library, and analyzing a book usually means
+      sending it to a server. This tool does neither.
     </p>
     <p>
-      This uses <a href="https://developer.mozilla.org/docs/Web/API/DecompressionStream"><code>DecompressionStream</code></a>,
-      a native browser API, to decompress the archive in place. The text is then
-      extracted with the browser's own HTML parser, tokenized and scored. The
-      consequence is the privacy claim: <strong>there is no upload path in the code
-      at all</strong>, so the promise is architectural rather than a policy you have
-      to believe.
+      A short ZIP reader (about 30 lines) finds the central directory, then inflates
+      each chapter with
+      <a href="https://developer.mozilla.org/docs/Web/API/DecompressionStream"><code>DecompressionStream('deflate-raw')</code></a>.
+      The browser's <code>DOMParser</code> extracts the text, and the scoring runs in
+      the same page. The code has no network call except the one that loads the
+      bundled sample, so the privacy claim can be checked by reading the source.
     </p>
-    <div class="grid">
-      <div class="cell">
-        <h3>Reading grade</h3>
-        <p>Flesch–Kincaid grade level, plus a 0–100 reading-ease score.</p>
-      </div>
-      <div class="cell">
-        <h3>Vocabulary richness</h3>
-        <p>Type–token ratio, with total and unique word counts alongside it.</p>
-      </div>
-      <div class="cell">
-        <h3>Top words</h3>
-        <p>The twenty most frequent meaningful words once stopwords are removed.</p>
-      </div>
-      <div class="cell">
-        <h3>Coverage curve</h3>
-        <p>How much of the book you can read knowing the N most common words. The
-           most useful chart for a learner.</p>
-      </div>
-    </div>
+    <dl class="specs">
+      <div class="spec"><dt>Reading grade</dt><dd>Flesch-Kincaid grade, from words per sentence and a heuristic syllable count, plus Flesch reading ease (0 to 100)</dd></div>
+      <div class="spec"><dt>Richness</dt><dd>Type-token ratio, with total and unique word counts</dd></div>
+      <div class="spec"><dt>Top words</dt><dd>The 20 most frequent words after a stopword list is applied</dd></div>
+      <div class="spec"><dt>Coverage</dt><dd>Cumulative share of all tokens covered by the N most frequent words, on a log x-axis, with 95% marked</dd></div>
+    </dl>
   </section>
 
   <section class="stop">
-    <p class="eyebrow">↓ why the coverage curve</p>
-    <h2>The number a learner actually wants</h2>
+    <p class="eyebrow">The coverage curve</p>
+    <h2>The number a learner wants</h2>
     <p>
-      A grade level compresses a whole book into one figure and tells you almost
-      nothing actionable. The coverage curve answers the real question: <em>how much
-      vocabulary do I need before this stops being exhausting?</em>
+      A grade level squeezes a book into one figure and doesn't tell a learner what
+      to do. The coverage curve answers a more useful question: how much vocabulary
+      do I need before this stops being a slog?
     </p>
     <p>
-      For <em>Alice</em>, the answer is <strong>1,397 distinct words for 95%</strong>.
-      The top 100 words alone already carry <strong>59%</strong>. That shape, steep at first, then a long flat tail, is the same shape I measured across
-      a season of television in the
-      <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>,
-      which is where this tool came from. That study needed a Python pipeline; this
-      turns the same lens into something anyone can point at their own book.
+      For <em>Alice</em> the answer is <strong>1,397 distinct words for 95%</strong>,
+      and the top 100 words already carry <strong>59%</strong> of the text. I
+      measured the same steep-then-flat shape across a season of television in the
+      <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.
+      That study needed a Python pipeline. This tool puts the same measurement in a
+      web page that works on any book.
     </p>
+    <div class="index">
+      <h3>Index of frequent words, <em>Alice's Adventures in Wonderland</em></h3>
+      <p>said<span class="c">462</span> alice<span class="c">386</span> all<span class="c">182</span> had<span class="c">178</span> what<span class="c">136</span> little<span class="c">128</span> out<span class="c">117</span> one<span class="c">103</span> down<span class="c">102</span> up<span class="c">100</span> about<span class="c">94</span> know<span class="c">87</span> like<span class="c">85</span> would<span class="c">83</span> went<span class="c">83</span> again<span class="c">83</span> herself<span class="c">83</span> have<span class="c">80</span> when<span class="c">79</span> could<span class="c">77</span></p>
+      <p class="cap">The tool's top-20 list for the sample, in rank order, with counts. Produced by running the page's own <code>analyze()</code> function on <code>sample-alice-in-wonderland.txt</code>, 2026-10-26.</p>
+    </div>
     <figure>
       <img width="2880" height="1920" class="shot" src="app-result.png" loading="lazy"
-        alt="The full analyzer page at desktop width showing the drop zone at the top and the complete results below, including grade level, statistic cards, word-frequency chart and coverage curve." />
-      <figcaption>The whole tool, top to bottom.</figcaption>
+        alt="The full analyzer page at desktop width with the drop zone at the top and the complete results below: grade level, statistics, word-frequency chart and coverage curve." />
+      <figcaption>The whole tool at desktop width.</figcaption>
     </figure>
   </section>
 
   <section class="stop">
-    <p class="eyebrow">↓ before you drop a file</p>
-    <h2>It works on a phone too</h2>
+    <p class="eyebrow">On a phone</p>
+    <h2>It works at 390 pixels</h2>
     <p>
-      Empty state on the left, phone layout on the right. The drop zone doubles as
-      a file picker on touch devices, and the bundled sample means the tool is
-      usable in one tap without hunting for an EPUB first.
+      The drop zone doubles as a file picker on touch devices, and the bundled
+      sample lets someone try the tool in one tap without finding an EPUB first.
     </p>
     <div class="panels">
       <figure>
         <img width="2880" height="1920" class="shot" src="app-empty.png" loading="lazy"
           alt="The analyzer's empty state with a drop zone, a Choose a file button and a Try a sample button." />
-        <figcaption><strong>Empty state</strong>: drop, pick, or try the sample.</figcaption>
+        <figcaption>Empty state: drop a file, pick one, or try the sample.</figcaption>
       </figure>
       <figure>
         <img width="1170" height="2532" class="shot shot--narrow" src="mobile.png" loading="lazy"
-          alt="The analyzer on a 390 pixel wide phone screen with the statistic cards stacked and both charts still legible." />
-        <figcaption><strong>390px</strong>: cards stack, charts stay readable.</figcaption>
+          alt="The analyzer on a 390 pixel wide phone screen with the statistics stacked and both charts legible." />
+        <figcaption>At 390px the statistics stack and the charts stay legible.</figcaption>
       </figure>
     </div>
   </section>
 
   <section class="stop stop--warn">
-    <p class="eyebrow">↓ what this cannot tell you</p>
-    <h2>Readability formulas are cruder than they look</h2>
+    <p class="eyebrow">Limitations</p>
+    <h2>Readability formulas are crude</h2>
     <p>
-      Flesch–Kincaid is essentially sentence length and syllable count. It has no
-      idea whether the ideas are hard, whether the vocabulary is archaic, or whether
-      the sentences are doing something structurally difficult. A book of short
-      sentences about difficult things scores as easy.
+      Flesch-Kincaid uses sentence length and syllables per word, nothing else. It
+      can't tell whether the ideas are hard or the vocabulary is archaic, so a book
+      of short sentences about difficult things scores as easy. The syllable count
+      is a vowel-group heuristic, and it miscounts some words.
     </p>
     <p>
-      Type–token ratio is also sensitive to length: longer texts tend to score
-      lower simply because they have more running words. Comparing TTR between a
-      novella and a doorstop is not comparing like with like, and the tool does not
-      correct for it.
+      Type-token ratio falls as texts get longer, so comparing it between a novella
+      and a long novel is unfair, and the tool does not correct for length.
     </p>
     <p>
-      The coverage curve is the most robust thing here and even it counts word
-      forms rather than word families, so "run", "running" and "ran" are three
-      words. That inflates the count somewhat against the word-family figures used
-      in language-teaching research.
+      The coverage curve counts word forms, not word families: "run", "running" and
+      "ran" are three words. That makes the counts higher than the word-family
+      figures used in language-teaching research. Only English is handled; the
+      tokenizer keeps the letters a to z.
     </p>
   </section>
 
   <section class="stop stop--end">
-    <p class="eyebrow">Finish · what it is built on</p>
-    <h2>Deliberately boring technology</h2>
+    <p class="eyebrow">Built on</p>
+    <h2>One HTML file, no dependencies</h2>
     <dl class="specs">
-      <div class="spec"><dt>Unzipping</dt><dd>Native <code>DecompressionStream</code>, no third-party library</dd></div>
-      <div class="spec"><dt>Text extraction</dt><dd>The browser's own HTML parser over the archive's XHTML files</dd></div>
-      <div class="spec"><dt>Scores</dt><dd>Flesch–Kincaid grade and reading ease; type–token ratio for richness</dd></div>
-      <div class="spec"><dt>Charts</dt><dd>Drawn on <code>&lt;canvas&gt;</code></dd></div>
+      <div class="spec"><dt>Unzipping</dt><dd>A hand-written ZIP central-directory reader and native <code>DecompressionStream</code></dd></div>
+      <div class="spec"><dt>Text</dt><dd>The browser's <code>DOMParser</code> over the archive's XHTML files, in filename order</dd></div>
+      <div class="spec"><dt>Charts</dt><dd>Drawn on <code>&lt;canvas&gt;</code> without a charting library</dd></div>
       <div class="spec"><dt>Accepts</dt><dd><code>.epub</code> and plain text</dd></div>
       <div class="spec"><dt>Sample</dt><dd><em>Alice's Adventures in Wonderland</em>, Project Gutenberg, public domain</dd></div>
-      <div class="spec"><dt>Privacy</dt><dd>No server, no upload, no analytics. There is no code path that sends the file anywhere</dd></div>
-      <div class="spec"><dt>Origin</dt><dd>The same lens as the <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>, made reusable</dd></div>
+      <div class="spec"><dt>Privacy</dt><dd>No server, no upload, no analytics</dd></div>
     </dl>
   </section>
 
@@ -400,16 +413,16 @@
 
 <div class="wrap">
   <section class="close">
-    <h2>Find out before you commit to 400 pages</h2>
+    <h2>Check a book before you commit to 400 pages</h2>
     <div class="cta-row">
       <a class="btn btn-primary" href="../">Analyze a book</a>
-      <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">or read the code</a>
+      <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Code on GitHub</a>
     </div>
   </section>
 
   <footer>
     <p>
-      EPUB Reading-Level Analyzer ·
+      EPUB reading-level analyzer ·
       <a href="../">App</a> ·
       <a href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Source</a> ·
       MIT © 2026 Jeremy Lee
