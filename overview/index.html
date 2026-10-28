@@ -242,18 +242,37 @@
   }
 
 
-  /* Signature: the sample's top words set as a back-of-book index. */
-  .index { margin: 34px 0 0; border-top: 2px solid var(--ink); padding-top: 16px; }
-  .index h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 20px; color: var(--accent); margin: 0 0 10px; }
-  .index p { margin: 0; max-width: none; font-family: var(--display); font-size: 21px; line-height: 1.7; color: var(--ink); }
-  .index .c { font-family: var(--mono); font-size: 14px; color: var(--ink2); margin: 0 12px 0 5px; }
-  .index .cap { font-family: var(--sans); font-size: 14px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
-  .marks { display: flex; flex-wrap: wrap; gap: 0; margin: 26px 0 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  /* Signature: the Flesch-Kincaid sum worked out under a passage you can edit. */
+  .try { margin: 40px 0 0; border-top: 2px solid var(--ink); padding-top: 16px; }
+  .try label { display: block; font-family: var(--display); font-style: italic; font-size: 19px; color: var(--accent); margin: 0 0 8px; }
+  .try textarea { width: 100%; min-height: 9.5rem; resize: vertical; font: 17px/1.55 var(--serif); color: var(--ink); background: var(--card); border: 1px solid var(--edge); padding: 12px 14px; }
+  .try textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sum { margin: 14px 0 0; font-family: var(--mono); font-size: clamp(13px, 1.7vw, 16px); color: var(--ink2); line-height: 1.9; overflow-x: auto; white-space: nowrap; }
+  .sum b { font-weight: 400; color: var(--accent2); }
+  .sum .g { font-family: var(--display); font-weight: 600; font-size: 1.9em; color: var(--accent); }
+  .sum-gloss { font-family: var(--sans); font-size: 14px; color: var(--muted); margin: 6px 0 0; line-height: 1.5; max-width: 64ch; }
+  .marks { display: flex; flex-wrap: wrap; margin: 26px 0 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
   .mark { flex: 1 1 8rem; padding: 12px 16px 12px 0; }
   .mark + .mark { border-left: 1px solid var(--rule); padding-left: 16px; }
   .mark b { display: block; font-family: var(--display); font-weight: 600; font-size: 30px; color: var(--accent2); line-height: 1.1; }
   .mark span { font-family: var(--sans); font-size: 14px; color: var(--muted); }
   @media (max-width: 520px) { .mark { flex-basis: 45%; } .mark + .mark { border-left: 0; padding-left: 0; } }
+  .cov-read { font-family: var(--display); font-size: clamp(20px, 2.5vw, 25px); line-height: 1.35; color: var(--ink); margin: 18px 0 0; max-width: 42ch; min-height: 2.7em; }
+  .cov-read b { font-weight: 600; color: var(--accent2); }
+  .cov input[type=range] { width: 100%; accent-color: var(--accent); margin: 12px 0 0; }
+  .cov svg { display: block; width: 100%; height: auto; margin-top: 8px; touch-action: pan-y; cursor: crosshair; }
+  .ch text { font-family: var(--mono); font-size: 11px; fill: var(--ink2); }
+  .ch .lbl { font-family: var(--display); font-style: italic; font-size: 13.5px; }
+  .ch .ax { stroke: var(--rule); }
+  .ch .ln { fill: none; stroke: var(--accent2); stroke-width: 2; }
+  .ch .cur { stroke: var(--accent); stroke-width: 1.2; }
+  .ch .dot { fill: var(--accent); }
+  .ch .tick { fill: var(--ink); }
+  .fig-cap { font-family: var(--sans); font-size: 14px; color: var(--muted); margin: 10px 0 0; line-height: 1.5; max-width: 64ch; }
+  .index { margin: 30px 0 0; border-top: 2px solid var(--ink); padding-top: 16px; }
+  .index h3 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 20px; color: var(--accent); margin: 0 0 10px; }
+  .index p { margin: 0; max-width: none; font-family: var(--display); font-size: 21px; line-height: 1.7; color: var(--ink); }
+  .index .c { font-family: var(--mono); font-size: 14px; color: var(--ink2); margin: 0 12px 0 5px; }
 </style>
 </head>
 <body>
@@ -269,10 +288,10 @@
 
     <p class="hero-sub">
       Give it an EPUB or a text file and it reports a Flesch-Kincaid grade, a
-      reading-ease score, vocabulary richness, the most frequent words, and a
-      coverage curve: how many distinct words you need to know to follow most of
-      the book. The EPUB is unzipped by the browser's own
-      <code>DecompressionStream</code>, so the file never leaves your device.
+      reading-ease score, vocabulary richness, the most frequent words, and a coverage
+      curve: how many distinct words you need to know to follow most of the book. The
+      browser's own <code>DecompressionStream</code> unzips the EPUB, so the file never
+      leaves your device.
     </p>
 
     <div class="cta-row">
@@ -280,20 +299,16 @@
       <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Code on GitHub</a>
     </div>
 
-    <figure style="margin-top:38px">
-      <img width="1624" height="2204" class="shot" src="result-card.png" fetchpriority="high"
-        alt="Analysis results for Alice's Adventures in Wonderland: Grade 6, 26,715 total words, 2,637 unique words, 9.9% vocabulary richness, reading ease 82, a bar chart of the twenty most frequent words led by said and alice, and a coverage curve crossing 95% at 1,397 words." />
-      <figcaption>
-        The result for the bundled public-domain sample, <em>Alice's Adventures in
-        Wonderland</em>: grade 6 (5.9 unrounded), 26,715 words, 2,637 distinct words.
-      </figcaption>
-    </figure>
+    <div class="try">
+      <label for="passage">Edit the passage and the grade recomputes</label>
+      <textarea id="passage" spellcheck="false">Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, 'and what is the use of a book,' thought Alice 'without pictures or conversations?'
 
-    <div class="marks" aria-label="Distinct words needed to cover each share of Alice's Adventures in Wonderland">
-      <div class="mark"><b>58</b><span>words cover 50%</span></div>
-      <div class="mark"><b>385</b><span>cover 80%</span></div>
-      <div class="mark"><b>1,397</b><span>cover 95%</span></div>
-      <div class="mark"><b>2,103</b><span>cover 98%</span></div>
+So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.</textarea>
+      <div class="sum" id="sum" aria-live="polite"></div>
+      <p class="sum-gloss">The tool's own formula and syllable heuristic, copied from <code>index.html</code>:
+        grade = 0.39 × (words per sentence) + 11.8 × (syllables per word) − 15.59. The
+        opening of <em>Alice</em> is two sentences of 113 words between them, which scores
+        grade 22.3 against the whole book's 5.9. Split them up and watch it fall.</p>
     </div>
   </section>
 </div>
@@ -302,77 +317,80 @@
 <div class="route">
 
   <section class="stop stop--key">
+    <p class="eyebrow">The coverage curve</p>
+    <h2>1,397 words cover 95% of <em>Alice</em></h2>
+    <p>
+      A grade level squeezes a book into one figure, and a learner can't do much with
+      it. The coverage curve answers a more useful question (how much vocabulary do I
+      need before this stops being a slog?) and gives a word count you can work toward.
+      For the bundled <em>Alice's Adventures in Wonderland</em>, 58 distinct words
+      already cover half the text and the top 100 carry 59%.
+    </p>
+    <div class="cov" id="cov">
+      <p class="cov-read" id="cov-read" aria-live="polite">Loading the sample…</p>
+      <label for="cov-n" class="fig-cap" style="display:block">Distinct words you know, most frequent first</label>
+      <input type="range" id="cov-n" min="0" max="1" value="0" disabled />
+      <svg id="cov-svg" class="ch" viewBox="0 0 640 240" role="img" tabindex="0"
+        aria-label="Coverage curve for Alice's Adventures in Wonderland on a log scale, passing 50 percent at 58 words, 80 percent at 385, 95 percent at 1,397 and 98 percent at 2,103. Arrow keys move along it."></svg>
+      <p class="fig-cap">Computed in your browser when the page loads: the tool's
+        <code>analyze()</code> run on <code>sample-alice-in-wonderland.txt</code> from the repo.
+        Word forms, not families, so "said" and "say" count separately.</p>
+    </div>
+    <div class="marks" aria-label="Distinct words needed to cover each share of Alice's Adventures in Wonderland">
+      <div class="mark"><b>58</b><span>words cover 50%</span></div>
+      <div class="mark"><b>385</b><span>cover 80%</span></div>
+      <div class="mark"><b>1,397</b><span>cover 95%</span></div>
+      <div class="mark"><b>2,103</b><span>cover 98%</span></div>
+    </div>
+    <p>
+      I measured the same steep-then-flat shape across a season of television in the
+      <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.
+      That study needed a Python pipeline; this tool puts the measurement in a web page
+      that works on any book.
+    </p>
+  </section>
+
+  <section class="stop">
     <p class="eyebrow">How it works</p>
     <h2>An EPUB is a ZIP, and browsers can unzip</h2>
     <p>
       Every EPUB is a ZIP archive of XHTML files. Reading one in a web page usually
       means bundling a JavaScript unzip library, and analyzing a book usually means
-      sending it to a server; this tool skips both.
+      sending it to a server. This tool does neither.
     </p>
     <p>
-      A short ZIP reader (about 30 lines) finds the central directory, then inflates
-      each chapter with
+      A ZIP reader of about 30 lines finds the central directory, then inflates each
+      chapter with
       <a href="https://developer.mozilla.org/docs/Web/API/DecompressionStream"><code>DecompressionStream('deflate-raw')</code></a>.
-      The browser's <code>DOMParser</code> extracts the text, and the scoring runs in
-      the same page. The code has no network call except the one that loads the
-      bundled sample, so the privacy claim can be checked by reading the source.
+      The browser's <code>DOMParser</code> extracts the text, and the scoring runs in the
+      same page. The only network call loads the bundled sample, so the privacy claim
+      can be checked by reading the source.
     </p>
-    <dl class="specs">
-      <div class="spec"><dt>Reading grade</dt><dd>Flesch-Kincaid grade, from words per sentence and a heuristic syllable count, plus Flesch reading ease (0 to 100)</dd></div>
-      <div class="spec"><dt>Richness</dt><dd>Type-token ratio, with total and unique word counts</dd></div>
-      <div class="spec"><dt>Top words</dt><dd>The 20 most frequent words after a stopword list is applied</dd></div>
-      <div class="spec"><dt>Coverage</dt><dd>Cumulative share of all tokens covered by the N most frequent words, on a log x-axis, with 95% marked</dd></div>
-    </dl>
-  </section>
-
-  <section class="stop">
-    <p class="eyebrow">The coverage curve</p>
-    <h2>The number a learner wants</h2>
-    <p>
-      A grade level squeezes a book into one figure, and a learner can't do much
-      with it. The coverage curve answers a more useful question (how much
-      vocabulary do I need before this stops being a slog?) and gives a word count
-      you can work toward.
-    </p>
-    <p>
-      For <em>Alice</em> the answer is <strong>1,397 distinct words for 95%</strong>,
-      and the top 100 words already carry <strong>59%</strong> of the text. I
-      measured the same steep-then-flat shape across a season of television in the
-      <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.
-      That study needed a Python pipeline; this tool puts the same measurement in a
-      web page that works on any book.
-    </p>
+    <figure>
+      <img width="1568" height="2068" class="shot" src="result-card.png" loading="lazy"
+        alt="The analyzer's result for Alice's Adventures in Wonderland: Grade 6, Flesch-Kincaid 5.9, 26,715 total words, 2,637 unique, 9.9% vocabulary richness, reading ease 82, a bar chart of the twenty most frequent words led by said and alice, and a coverage curve crossing 95% at 1,397 words." />
+      <figcaption>The tool's result for the sample, captured 2026-10-28.</figcaption>
+    </figure>
     <div class="index">
       <h3>Index of frequent words, <em>Alice's Adventures in Wonderland</em></h3>
       <p>said<span class="c">462</span> alice<span class="c">386</span> all<span class="c">182</span> had<span class="c">178</span> what<span class="c">136</span> little<span class="c">128</span> out<span class="c">117</span> one<span class="c">103</span> down<span class="c">102</span> up<span class="c">100</span> about<span class="c">94</span> know<span class="c">87</span> like<span class="c">85</span> would<span class="c">83</span> went<span class="c">83</span> again<span class="c">83</span> herself<span class="c">83</span> have<span class="c">80</span> when<span class="c">79</span> could<span class="c">77</span></p>
-      <p class="cap">The tool's top-20 list for the sample, in rank order, with counts. Produced by running the page's own <code>analyze()</code> function on <code>sample-alice-in-wonderland.txt</code>, 2026-10-26.</p>
+      <p class="fig-cap">The tool's top-20 list for the sample after stopwords, in rank order, with counts.</p>
     </div>
-    <figure>
-      <img width="2880" height="1920" class="shot" src="app-result.png" loading="lazy"
-        alt="The full analyzer page at desktop width with the drop zone at the top and the complete results below: grade level, statistics, word-frequency chart and coverage curve." />
-      <figcaption>The whole tool at desktop width.</figcaption>
-    </figure>
   </section>
 
   <section class="stop">
     <p class="eyebrow">On a phone</p>
     <h2>It works at 390 pixels</h2>
     <p>
-      The drop zone doubles as a file picker on touch devices, and the bundled
-      sample lets someone try the tool in one tap without finding an EPUB first.
+      The drop zone doubles as a file picker on touch devices, and the bundled sample
+      lets someone try the tool in one tap without finding an EPUB first. The charts
+      take their colors from the page, so they follow the phone's light or dark mode.
     </p>
-    <div class="panels">
-      <figure>
-        <img width="2880" height="1920" class="shot" src="app-empty.png" loading="lazy"
-          alt="The analyzer's empty state with a drop zone, a Choose a file button and a Try a sample button." />
-        <figcaption>Empty state: drop a file, pick one, or try the sample.</figcaption>
-      </figure>
-      <figure>
-        <img width="1170" height="2532" class="shot shot--narrow" src="mobile.png" loading="lazy"
-          alt="The analyzer on a 390 pixel wide phone screen with the statistics stacked and both charts legible." />
-        <figcaption>At 390px the statistics stack and the charts stay legible.</figcaption>
-      </figure>
-    </div>
+    <figure>
+      <img width="1170" height="2532" class="shot shot--narrow" src="mobile.png" loading="lazy"
+        alt="The analyzer on a 390 pixel wide phone screen: Grade 6 for the sample, the four statistics in a two-by-two grid, and both charts legible." />
+      <figcaption>The sample result at 390px wide.</figcaption>
+    </figure>
   </section>
 
   <section class="stop stop--warn">
@@ -380,9 +398,9 @@
     <h2>Readability formulas are crude</h2>
     <p>
       Flesch-Kincaid uses sentence length and syllables per word, nothing else. It
-      can't tell whether the ideas are hard or the vocabulary is archaic, so a book
-      of short sentences about difficult things scores as easy. The syllable count
-      is a vowel-group heuristic, and it miscounts some words.
+      can't tell whether the ideas are hard or the vocabulary archaic, so a book of
+      short sentences about difficult things scores as easy. The syllable count is a
+      vowel-group heuristic, and it miscounts some words.
     </p>
     <p>
       Type-token ratio falls as texts get longer, which makes a comparison between a
@@ -391,8 +409,8 @@
     <p>
       The coverage curve counts word forms, so "run", "running" and "ran" are three
       words, and its counts come out higher than the word-family figures used in
-      language-teaching research. Only English is handled; the
-      tokenizer keeps the letters a to z.
+      language-teaching research. Only English is handled; the tokenizer keeps the
+      letters a to z.
     </p>
   </section>
 
@@ -402,7 +420,7 @@
     <dl class="specs">
       <div class="spec"><dt>Unzipping</dt><dd>A hand-written ZIP central-directory reader and native <code>DecompressionStream</code></dd></div>
       <div class="spec"><dt>Text</dt><dd>The browser's <code>DOMParser</code> over the archive's XHTML files, in filename order</dd></div>
-      <div class="spec"><dt>Charts</dt><dd>Drawn on <code>&lt;canvas&gt;</code> without a charting library</dd></div>
+      <div class="spec"><dt>Charts</dt><dd>Drawn on <code>&lt;canvas&gt;</code> without a charting library, colored from the page's CSS variables</dd></div>
       <div class="spec"><dt>Accepts</dt><dd><code>.epub</code> and plain text</dd></div>
       <div class="spec"><dt>Sample</dt><dd><em>Alice's Adventures in Wonderland</em>, Project Gutenberg, public domain</dd></div>
       <div class="spec"><dt>Privacy</dt><dd>Everything runs on your device; there is no server, upload or analytics</dd></div>
@@ -414,7 +432,6 @@
 
 <div class="wrap">
   <section class="close">
-    <h2>Check a book before you commit to 400 pages</h2>
     <div class="cta-row">
       <a class="btn btn-primary" href="../">Analyze a book</a>
       <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Code on GitHub</a>
@@ -431,5 +448,95 @@
     <p>Sample text is public domain, from Project Gutenberg.</p>
   </footer>
 </div>
+
+<script>
+(function () {
+  /* syllables() and the scoring in analyze() are copied unchanged from the tool's index.html */
+  function syllables(w) {
+    w = w.toLowerCase().replace(/[^a-z]/g, ''); if (w.length <= 3) return w.length ? 1 : 0;
+    w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    var m = w.match(/[aeiouy]{1,2}/g); return m ? m.length : 1;
+  }
+  function score(text) {
+    text = text.replace(/\s+/g, ' ').trim();
+    var sentences = Math.max(1, (text.match(/[.!?]+["'”’)\]]*(?:\s|$)/g) || []).length);
+    var tokens = (text.toLowerCase().match(/[a-z][a-z']*[a-z]|[a-z]/g)) || [];
+    var W = tokens.length || 1, syl = 0;
+    tokens.forEach(function (t) { syl += syllables(t); });
+    return { W: tokens.length, S: sentences, wps: W / sentences, spw: syl / W, fk: 0.39 * (W / sentences) + 11.8 * (syl / W) - 15.59, tokens: tokens };
+  }
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  var ta = document.getElementById("passage"), sum = document.getElementById("sum");
+  function upd() {
+    var a = score(ta.value);
+    if (!a.W) { sum.textContent = "No words to score."; return; }
+    sum.innerHTML = fmt(a.W) + " words, " + a.S + " sentence" + (a.S === 1 ? "" : "s") + "<br>" +
+      "0.39 × <b>" + a.wps.toFixed(1) + "</b> + 11.8 × <b>" + a.spw.toFixed(2) + "</b> − 15.59 = <span class=\"g\">" + a.fk.toFixed(1) + "</span>";
+  }
+  ta.addEventListener("input", upd); upd();
+
+  /* Coverage curve for the bundled sample, computed the way analyze() does */
+  var NS = "http://www.w3.org/2000/svg";
+  function mk(tag, at, p) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); p.appendChild(e); return e; }
+  var svg = document.getElementById("cov-svg"), inp = document.getElementById("cov-n"), out = document.getElementById("cov-read");
+  var C = [], ci = 0, MAX = 1, cx, cy, cur, dot, dim;
+  function sizeOf() {
+    var w = Math.round(Math.max(300, Math.min(760, svg.getBoundingClientRect().width || 640))), h = w < 520 ? 220 : 240;
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h); return [w, h];
+  }
+  function draw() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    dim = sizeOf(); var W = dim[0], H = dim[1], L = 40, R = 12, T = 12, B = 34;
+    cx = function (n) { return L + Math.log10(n) / Math.log10(MAX) * (W - L - R); };
+    cy = function (f) { return T + (1 - f) * (H - T - B); };
+    [0, 0.5, 0.8, 0.95].forEach(function (f) {
+      mk("line", { x1: L, x2: W - R, y1: cy(f), y2: cy(f), "class": "ax" }, svg);
+      mk("text", { x: L - 6, y: cy(f) + 4, "text-anchor": "end" }, svg).textContent = Math.round(f * 100) + "%";
+    });
+    [1, 10, 100, 1000].forEach(function (n) { mk("text", { x: cx(n), y: H - 16, "text-anchor": "middle" }, svg).textContent = fmt(n); });
+    mk("text", { x: (L + W - R) / 2, y: H - 2, "text-anchor": "middle", "class": "lbl" }, svg).textContent = "distinct words known (log scale)";
+    mk("path", { d: C.map(function (p, i) { return (i ? "L" : "M") + cx(p[0]).toFixed(1) + " " + cy(p[1]).toFixed(1); }).join(""), "class": "ln" }, svg);
+    cur = mk("line", { y1: T, y2: H - B, "class": "cur" }, svg);
+    dot = mk("circle", { r: 4.5, "class": "dot" }, svg);
+    set(ci);
+  }
+  function set(i) {
+    ci = Math.max(0, Math.min(C.length - 1, i)); inp.value = ci;
+    var n = C[ci][0], f = C[ci][1];
+    cur.setAttribute("x1", cx(n)); cur.setAttribute("x2", cx(n));
+    dot.setAttribute("cx", cx(n)); dot.setAttribute("cy", cy(f));
+    out.innerHTML = "Know the <b>" + fmt(n) + "</b> most frequent word" + (n === 1 ? "" : "s") + " in <em>Alice</em> and you have <b>" + (f * 100).toFixed(1) + "%</b> of its running text.";
+  }
+  fetch("../sample-alice-in-wonderland.txt").then(function (r) { return r.text(); }).then(function (text) {
+    var a = score(text), freq = new Map();
+    a.tokens.forEach(function (t) { freq.set(t, (freq.get(t) || 0) + 1); });
+    var sorted = Array.from(freq.values()).sort(function (x, y) { return y - x; }), cum = 0;
+    sorted.forEach(function (c, i) {
+      cum += c; var n = i + 1;
+      if (n <= 100 || n % 10 === 0 || n === 1397 || n === sorted.length) C.push([n, cum / a.W]);
+    });
+    MAX = sorted.length;
+    C.forEach(function (p, i) { if (p[0] === 1397) ci = i; });
+    inp.max = C.length - 1; inp.disabled = false;
+    draw();
+  }).catch(function () { out.textContent = "The sample could not be loaded here; open the tool to run it."; });
+  inp.addEventListener("input", function () { set(+inp.value); });
+  function pick(e) {
+    if (!C.length) return;
+    var b = svg.getBoundingClientRect(), vx = (e.clientX - b.left) / b.width * dim[0];
+    var n = Math.pow(10, (vx - 40) / (dim[0] - 52) * Math.log10(MAX)), best = 0;
+    C.forEach(function (p, i) { if (Math.abs(Math.log(p[0] / n)) < Math.abs(Math.log(C[best][0] / n))) best = i; });
+    set(best);
+  }
+  svg.addEventListener("pointermove", pick); svg.addEventListener("pointerdown", pick);
+  svg.addEventListener("keydown", function (e) {
+    var s = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -10, PageUp: 10 }[e.key];
+    if (s && C.length) { e.preventDefault(); set(ci + s); }
+  });
+  var lastW = window.innerWidth;
+  window.addEventListener("resize", function () { if (C.length && window.innerWidth !== lastW) { lastW = window.innerWidth; draw(); } });
+})();
+</script>
 </body>
 </html>
