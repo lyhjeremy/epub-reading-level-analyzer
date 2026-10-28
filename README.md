@@ -28,11 +28,11 @@ The bundled public-domain sample, *Alice's Adventures in Wonderland*:
 - The 20 most frequent words after a stopword list.
 - A coverage curve: the share of all tokens covered by the N most frequent words, on a log axis, with the 95% point marked.
 
-The same coverage measurement drives my [Love Island lexical analysis](https://lyhjeremy.github.io/love-island-lexical-analysis/), which used a Python pipeline. This puts it in a web page that works on any book.
+The same coverage measurement drives my [Love Island lexical analysis](https://lyhjeremy.github.io/love-island-lexical-analysis/), which used a Python pipeline; this tool puts it in a web page that works on any book.
 
 ## How it works
 
-An EPUB is a ZIP archive of XHTML files. A short ZIP reader in the page finds the central directory and inflates each chapter with the browser's native [`DecompressionStream`](https://developer.mozilla.org/docs/Web/API/DecompressionStream) (`deflate-raw`). `DOMParser` extracts the text, and the scoring and `<canvas>` charts run in the same page. There are no third-party libraries and no server. The only network request loads the bundled sample when you click it.
+An EPUB is a ZIP archive of XHTML files. A short ZIP reader in the page finds the central directory and inflates each chapter with the browser's native [`DecompressionStream`](https://developer.mozilla.org/docs/Web/API/DecompressionStream) (`deflate-raw`). `DOMParser` extracts the text, and the scoring and `<canvas>` charts run in the same page, without third-party libraries or a server. The only network request loads the bundled sample when you click it.
 
 Stack: vanilla HTML, CSS and JavaScript in a single `index.html`.
 
@@ -40,7 +40,7 @@ Stack: vanilla HTML, CSS and JavaScript in a single `index.html`.
 
 - Flesch-Kincaid measures sentence and word length only. Short sentences about hard ideas score as easy.
 - Type-token ratio falls with text length, and the tool does not correct for it.
-- Coverage counts word forms, not word families, so counts run higher than the word-family figures in language-teaching research.
+- Coverage counts word forms ("run" and "ran" are two words), so counts run higher than the word-family figures in language-teaching research.
 - English only: the tokenizer keeps the letters a to z.
 
 ## How to run

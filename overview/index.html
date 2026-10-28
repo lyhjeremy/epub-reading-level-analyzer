@@ -307,7 +307,7 @@
     <p>
       Every EPUB is a ZIP archive of XHTML files. Reading one in a web page usually
       means bundling a JavaScript unzip library, and analyzing a book usually means
-      sending it to a server. This tool does neither.
+      sending it to a server; this tool skips both.
     </p>
     <p>
       A short ZIP reader (about 30 lines) finds the central directory, then inflates
@@ -329,16 +329,17 @@
     <p class="eyebrow">The coverage curve</p>
     <h2>The number a learner wants</h2>
     <p>
-      A grade level squeezes a book into one figure and doesn't tell a learner what
-      to do. The coverage curve answers a more useful question: how much vocabulary
-      do I need before this stops being a slog?
+      A grade level squeezes a book into one figure, and a learner can't do much
+      with it. The coverage curve answers a more useful question (how much
+      vocabulary do I need before this stops being a slog?) and gives a word count
+      you can work toward.
     </p>
     <p>
       For <em>Alice</em> the answer is <strong>1,397 distinct words for 95%</strong>,
       and the top 100 words already carry <strong>59%</strong> of the text. I
       measured the same steep-then-flat shape across a season of television in the
       <a href="https://lyhjeremy.github.io/love-island-lexical-analysis/">Love Island lexical analysis</a>.
-      That study needed a Python pipeline. This tool puts the same measurement in a
+      That study needed a Python pipeline; this tool puts the same measurement in a
       web page that works on any book.
     </p>
     <div class="index">
@@ -384,13 +385,13 @@
       is a vowel-group heuristic, and it miscounts some words.
     </p>
     <p>
-      Type-token ratio falls as texts get longer, so comparing it between a novella
-      and a long novel is unfair, and the tool does not correct for length.
+      Type-token ratio falls as texts get longer, which makes a comparison between a
+      novella and a long novel unfair, and the tool does not correct for length.
     </p>
     <p>
-      The coverage curve counts word forms, not word families: "run", "running" and
-      "ran" are three words. That makes the counts higher than the word-family
-      figures used in language-teaching research. Only English is handled; the
+      The coverage curve counts word forms, so "run", "running" and "ran" are three
+      words, and its counts come out higher than the word-family figures used in
+      language-teaching research. Only English is handled; the
       tokenizer keeps the letters a to z.
     </p>
   </section>
@@ -404,7 +405,7 @@
       <div class="spec"><dt>Charts</dt><dd>Drawn on <code>&lt;canvas&gt;</code> without a charting library</dd></div>
       <div class="spec"><dt>Accepts</dt><dd><code>.epub</code> and plain text</dd></div>
       <div class="spec"><dt>Sample</dt><dd><em>Alice's Adventures in Wonderland</em>, Project Gutenberg, public domain</dd></div>
-      <div class="spec"><dt>Privacy</dt><dd>No server, no upload, no analytics</dd></div>
+      <div class="spec"><dt>Privacy</dt><dd>Everything runs on your device; there is no server, upload or analytics</dd></div>
     </dl>
   </section>
 
