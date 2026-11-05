@@ -298,10 +298,35 @@
       leaves your device.
     </p>
 
+    <p class="hero-sub">
+      On the bundled <em>Alice's Adventures in Wonderland</em> it returns grade 5.9 and
+      reading ease 82, and shows that 1,397 of the book's 2,637 distinct words cover 95%
+      of its 26,715 words.
+    </p>
+
     <div class="cta-row">
       <a class="btn btn-primary" href="../">Analyze a book</a>
       <a class="textlink" href="https://github.com/lyhjeremy/epub-reading-level-analyzer">Code on GitHub</a>
     </div>
+
+    <style>
+      .entry { margin: 30px 0 0; padding: 14px 0 4px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+      .entry h2 { margin: 0 0 8px; font: 600 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); max-width: none; }
+      .entry dl { margin: 0; display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 6px 18px; }
+      .entry dt { font-family: var(--display); font-style: italic; font-size: 18px; color: var(--accent); }
+      .entry dd { margin: 0; font-family: var(--sans); font-size: 15.5px; line-height: 1.5; color: var(--ink); }
+      @media (max-width: 520px) { .entry dl { grid-template-columns: 1fr; gap: 0; } .entry dd { margin-bottom: 8px; } }
+    </style>
+    <section class="entry" aria-labelledby="glance-h">
+      <h2 id="glance-h">At a glance</h2>
+      <dl>
+        <dt>Does</dt><dd>Scores an EPUB or text file for Flesch-Kincaid grade, reading ease, type-token ratio, top 20 words and a vocabulary coverage curve.</dd>
+        <dt>Runs</dt><dd>One <code>index.html</code>, no libraries, no server; the browser's <code>DecompressionStream</code> unzips the book.</dd>
+        <dt>Sample</dt><dd><em>Alice</em>: grade 5.9, ease 82, 26,715 words, 2,637 distinct, 95% coverage at 1,397 words.</dd>
+        <dt>Tested</dt><dd>No automated test suite. This page reruns the tool's scoring code on the sample each time it loads and draws the coverage curve from that run.</dd>
+        <dt>Limits</dt><dd>English only; Flesch-Kincaid sees only sentence and word length; coverage counts word forms, not families.</dd>
+      </dl>
+    </section>
 
     <div class="try">
       <label for="passage">Edit the passage and the grade recomputes</label>
@@ -324,9 +349,9 @@ So she was considering in her own mind (as well as she could, for the hot day ma
     <p class="eyebrow">The coverage curve</p>
     <h2>1,397 words cover 95% of <em>Alice</em></h2>
     <p>
-      A grade level squeezes a book into one figure, and a learner can't do much with
-      it. The coverage curve answers a more useful question (how much vocabulary do I
-      need before this stops being a slog?) and gives a word count you can work toward.
+      A grade level squeezes a book into one figure that a learner can't do much with.
+      The coverage curve asks how much vocabulary you need before the book stops being a
+      slog, and gives a word count you can work toward.
       For the bundled <em>Alice's Adventures in Wonderland</em>, 58 distinct words
       already cover half the text and the top 100 carry 59%.
     </p>

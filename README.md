@@ -1,6 +1,7 @@
 # EPUB reading-level analyzer
 
-A browser tool that reports how hard a book is to read: Flesch-Kincaid grade, vocabulary richness and a vocabulary coverage curve, computed on your device with nothing uploaded.
+How hard is a book to read, and how many words do you need to follow it? This browser tool answers both for any EPUB, with nothing uploaded: Flesch-Kincaid grade, vocabulary richness and a vocabulary coverage curve.
+On the bundled *Alice's Adventures in Wonderland* it reports grade 5.9, and 1,397 of 2,637 distinct words cover 95% of the text.
 
 [Live app](https://lyhjeremy.github.io/epub-reading-level-analyzer/) · [Write-up](https://lyhjeremy.github.io/epub-reading-level-analyzer/overview/)
 
